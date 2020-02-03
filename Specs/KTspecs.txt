@@ -1,0 +1,133 @@
+// "Comp" is short for "Comparable"
+// "KT" is short for "KeyType"
+
+----------
+
+Table.java
+
+----------
+
+// PRIVATE FINAL VARIABLES
+private (static) (final) Type = ...;
+- static final String DIR 	// relative path for storage directory
+- static final String EXT 	// filename extension for DB file
+- static int count = 0 		// counter for naming temp tables
+- final String name 		// of table
+- final String [] attribute 	// array of attr names
+- final Class [] domain 	// INT types, REAL types, STRING types
+- final list <Comp []> tuples 	// coll of tuples (data storage)
+- final String [] key 		// PKs
+- final Map <KT, Comp []> index // index into tuples (maps key to tuple #)
+
+// CONSTRUCTORS
+public Table (String _name, String[] _attribute, Class[] _domain, String[] _key)
+	tuples = new Array List <> ();
+	index = new TreeMap <> ();
+public Table (" ... ", List <Comp []> _tuples)
+	tuples = _tuples;
+	index = new TreeMap <> ();
+public Table (String name, String attributes, String domains, String _key)
+	// extract the multiple words from a single string
+
+// PUBLIC METHODS...
+
+// KATIE...
+// public Table...
+project (String attributes)
+select (Predicate <Comp []> predicate) // already complete
+select (KT keyval)
+
+// MATT...
+// public Table...
+union (Table table2)
+minus (Table table2)
+
+// DANIEL...
+// public Table...
+join (String attributes1, String attributes2, Table table2)
+join (Table table2)
+
+// NO ONE...
+// public...
+int col (String attr) // return col pos of given attr
+boolean insert (Comp[] tup)
+String getName () // of table
+void print ()
+void printIndex ()
+static Table load (String name) // load table into memory
+void save ()
+
+// PRIVATE METHODS
+// private...
+boolean compatible (Table table2) // same # attributes & same domain (types)
+int [] match (String [] column) // match col & attr names to determine domain
+Comp [] extract (Comp [] t, String [] column) // extract attr's
+boolean TypeCheck (Comp [] t) // check size of tuple & type of attr's
+Static Class [] findClass (String [] className)
+Class [] extractDomain (int [] colPos, Class [] group)
+
+------------
+
+MovieDB.java
+
+------------
+
+// Create, populate, and query a Movie DB
+
+// Run down of tables, keys, and primary keys...
+
+movie		cinema		movieStar
+-----		------		---------
+title (PK)	title (PK)	name (PK)
+year (PK)	year (PK)	address
+length		length		gender (-Char)
+genre		genre		birthdate
+studioName	studioName
+producerNo	producerNo
+
+movieExec	studio		starsIn
+---------	------		-------
+certNo (PK)	name (PK)	movieTitle (PK)
+name		address		movieYear (PK)
+address		presNo		starName (PK)
+fee (-Float)
+
+// *table* means insert Table name here...
+// *var* means insert variable name here...
+
+Table *table* newTable ("table", "keys", "types", "PKs");
+Comp [] *var* = { , , };
+*table*.insert (*var*);
+*table*.print (*var*);
+*table*.save ();
+*table*.print ();
+// Test cases...
+
+--------------
+
+ArrayUtil.java
+
+--------------
+
+// Concat two arrays of type T to form a new wider array
+public static <T> T [] concat (T [] arr1, T [] arr2)
+
+------------
+
+KeyType.java
+
+------------
+
+// Provides a key type for handling both
+// non-composite and composite keys
+private final Comp [] key;
+public KeyType (Comp [] _key)
+public KeyType (Comp key0, Comp ... keys)
+compareTo (KeyType k)
+equals (Object k)
+hashCode ()
+public String toString ()
+KeyType key1..3 = new KeyType (new Comp [] { , });
+
+
+
