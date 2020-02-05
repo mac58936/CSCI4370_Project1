@@ -234,7 +234,49 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
+        //gets the column positions of attributes t_attrs and u_attrs
+        int[] att1ColPos = this.match(t_attrs);
+        int[] att2ColPos = table2.match(u_attrs);
+
+        //gets the domains for above columns
+        Class[] table1Domains = this.extractDom(att1ColPos, this.domain);
+        Class[] table2Domains = this.extractDom(att2ColPos, table2.domain);
+
+        String[] table2Attributes = new String[table2.attribute.length];
+
+        //if domains are different, nothing happens
+        if (Arrays.equals(table1Domains, table2Domains)) {
+
+            //for loops do Cartesian product of tuples of this table and table 2
+            //by matching tuple values of specified attributes and puts new tuples in rows
+            for (Comparable[] t1 : this.tuples) {
+                for (Comparable[] t2 : table2.tuples) {
+                    int matches = 0;
+
+                    for (int i = 0; i < att1ColPos.length; i++) {
+                        if (t1[(int)att1ColPos[i]].equals(t2[(int)att2ColPos[i]])) {
+                            matchesWhole++;
+                        }
+                        if (i == att1ColPos.length - 1 && matches == att1ColPos.length) {
+                            rows.add(ArrayUtil.concat(t1, t2));
+                        }
+                    }
+                }
+            }
+
+            //disambiguates attribute names by appending "2" to the end of any duplicate
+            //attribute name as suggested above
+            for (int i = 0; i < table2.attribute.length; i++) {
+                table2Attributes[i] = table2.attribute[i];
+            }
+            for (int att2 = 0; att2 < table2Attributes.length; att2++) {
+                for (int att1 = 0; att1 < this.attribute.length; att1++) {
+                    if (this.attribute[att1].equalsIgnoreCase(table2Attributes[att2])) {
+                        table2Attributes[att2] = table2Attributes[att2] + "2";
+                    }
+                }
+            }
+        }
 
         return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
                                           ArrayUtil.concat (domain, table2.domain), key, rows);
