@@ -123,7 +123,11 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D
+        //  K A T I E ' S  W O R K
+        for (Comparable [] row : this.tuples){
+            rows.add(this.extract(row, attrs));
+        }
+        //  K A T I E ' S  W O R K
 
         return new Table (name + count++, attrs, colDomain, newKey, rows);
     } // project
@@ -163,7 +167,18 @@ public class Table
 
         out.println("ARRAY LIST:\n" + rows);
 
-        //  T O   B E   I M P L E M E N T E D 
+        //  K A T I E ' S  W O R K
+        if(index.containsKey(keyVal)){
+            rows.add(index.get(keyVal));
+        }
+        /*
+        for(Map.Entry <KeyType, Comparable []> e: index.entrySet()){
+            if(e.getKey().equals(keyVal)){
+                rows.add(e.getValue());
+            }
+        }
+        */
+        //  K A T I E ' S  W O R K
 
         return new Table (name + count++, attribute, domain, key, rows);
     } // select
