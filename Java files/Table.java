@@ -270,7 +270,7 @@ public class Table
 
                     for (int i = 0; i < att1ColPos.length; i++) {
                         if (t1[(int)att1ColPos[i]].equals(t2[(int)att2ColPos[i]])) {
-                            matchesWhole++;
+                            matches++;
                         }
                         if (i == att1ColPos.length - 1 && matches == att1ColPos.length) {
                             rows.add(ArrayUtil.concat(t1, t2));
