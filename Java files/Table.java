@@ -110,9 +110,9 @@ public class Table
      *
      * #usage movie.project ("title year studioNo")
      *
+     * @augtor Kathryn Brown, 811519926
      * @param attributes  the attributes to project onto
      * @return  a table of projected tuples
-     * PPPPPRRRRROOOOOJJJJJEEEEECCCCCTTTTT
      */
     public Table project (String attributes)
     {
@@ -153,9 +153,9 @@ public class Table
      * Select the tuples satisfying the given key predicate (key = value).  Use an index
      * (Map) to retrieve the tuple with the given key value.
      *
+     * @author Kathryn Brown, 811519926
      * @param keyVal  the given key value
      * @return  a table with the tuple satisfying the key predicate
-     * SSSSSEEEEELLLLLEEEEECCCCCTTTTT
      */
     public Table select (KeyType keyVal)
     {
@@ -188,9 +188,9 @@ public class Table
      *
      * #usage movie.union (show)
      *
+     * @author Matthew Colley, 811709135
      * @param table2  the rhs table in the union operation
      * @return  a table representing the union
-     * UUUUUNNNNNIIIIIOOOOONNNNN
      */
     public Table union (Table table2)
     {
@@ -210,9 +210,9 @@ public class Table
      *
      * #usage movie.minus (show)
      *
+     * @author Matthew Colley, 811709135
      * @param table2  The rhs table in the minus operation
      * @return  a table representing the difference
-     * MMMMMIIIIINNNNNUUUUUSSSSS
      */
     public Table minus (Table table2)
     {
@@ -233,11 +233,11 @@ public class Table
      *
      * #usage movie.join ("studioNo", "name", studio)
      *
+     * @author Daniel Garcia, 811885075
      * @param attribute1  the attributes of this table to be compared (Foreign Key)
      * @param attribute2  the attributes of table2 to be compared (Primary Key)
      * @param table2      the rhs table in the join operation
      * @return  a table with tuples satisfying the equality predicate
-     * JJJJJOOOOOIIIIINNNNN
      */
     public Table join (String attributes1, String attributes2, Table table2)
     {
@@ -304,9 +304,9 @@ public class Table
      *
      * #usage movieStar.join (starsIn)
      *
+     * @author Daniel Garcia, 811885075
      * @param table2  the rhs table in the join operation
      * @return  a table with tuples satisfying the equality predicate
-     * JJJJJOOOOOIIIIINNNNN
      */
     public Table join (Table table2)
     {
