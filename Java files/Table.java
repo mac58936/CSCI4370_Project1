@@ -314,11 +314,141 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
+        // for pulling attributes for tables
+        Comparable[] table1Attributes = new Comparable[this.attribute.length];
+        Comparable[] table2Attributes = new Comparable[table2.attribute.length];
 
-        // FIX - eliminate duplicate columns
-        return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
-                                          ArrayUtil.concat (domain, table2.domain), key, rows);
+        // for pulling positions based on attributes
+        Comparable[] table1Positions = new Comparable[this.attribute.length];
+        Comparable[] table2Positions = new Comparable[table2.attribute.length];
+
+        // below actually fills in the above arrays
+        int counter = 0;
+
+        for (int i = 0; i < this.attribute.length; i++) {
+            for (int j = 0; j < table2.attribute.length; j++) {
+                if (this.attribute[i].equalsIgnoreCase(table2.attribute[j])) {
+                    // fills arrays with "indexes" of positions
+                    table1Positions[counter] = i;
+                    table2Positions[counter] = j;
+
+                    // fills arrays with attributes
+                    table1Attributes[counter] = this.attribute[i];
+                    table2Attributes[counter] = table2.attribute[j];
+
+                    counter++;
+                    break;
+                }
+            }
+        }
+
+        Comparable[] attrPosTable1 = new Comparable[counter];
+        Comparable[] attrPosTable2 = new Comparable[counter];
+        Comparable[] attrTable2 = new Comparable[counter];
+
+        // fills new arrays with above arrays
+        for (int i = 0; i < counter; i++) {
+            attrPosTable1[i] = table1Positions[i];
+            attrPosTable2[i] = table2Positions[i];
+            attrTable2[i] = table2Attributes[i];
+        }
+
+        int nullCount = 0;
+
+        // counts for nulls
+        for (int i = 0; i < attrPosTable1.length; i++) {
+            if (attrPosTable1[i] == null) {
+                nullCount++;
+            }
+        }
+
+        // compares tuples of the tables based on their matching attributes
+        // and fills "rows" array with 'joined' tuples
+        if (nullCount != attrPosTable1.length) {
+            for (Comparable[] tup1 : this.tuples) {
+                for (Comparable[] tup2 : table2.tuples) {
+                    int countForMatchJoin = 0; // holds number of matching tuples
+
+                    for (int i = 0; i < attrPosTable1.length; i++) {
+                        if (tup1[(int) attrPosTable1[i]].equals(tup2[(int) attrPosTable2[i]])) {
+                            countForMatchJoin++;
+                        }
+                    }
+
+                    if (countForMatchJoin == attrPosTable1.length) {
+                        rows.add(ArrayUtil.concat(tup1, tup2));
+                    }
+                }
+            }
+
+            // next block of code does resizing of attributes and domains of table 2
+            // in order to avoid duplicate columns in end table
+
+            List<String> newTableAttributesList = new ArrayList<>();
+            List<Class> newTableDomainsList = new ArrayList<>();
+
+            boolean contains = true;
+            for (int i = 0; i < table2.attribute.length; i++) {
+                for (int j = 0; j < attrTable2.length; j++) {
+                    if (table2.attribute[i].equalsIgnoreCase((String) attrTable2[j])) {
+                        contains = false;
+                    }
+                }
+
+                if (contains == true) {
+                    newTableAttributesList.add(table2.attribute[i]);
+                    newTableDomainsList.add(table2.domain[i]);
+                }
+                contains = true;
+            }
+
+            String[] newTableAttributes = newTableAttributesList.toArray(new String[newTableAttributesList.size()]);
+            Class[] newTableDomains = newTableDomainsList.toArray(new Class[newTableDomainsList.size()]);
+
+            // "rows" is fixed to make sure it fits with resized values of attributes and
+            // domains of table 2
+
+            Comparable[] actualPos = new Comparable[this.attribute.length
+                    + (table2.attribute.length - attrPosTable2.length)];
+            int posIndex = 0;
+
+            //for loop runs through tables to find accurate positions for attributes
+            for (int i = 0; i < (this.attribute.length + table2.attribute.length); i++) {
+                if (i < this.attribute.length) {
+                    actualPos[posIndex] = i;
+                    posIndex++;
+                } else {
+                    int countForNotMatch = 0;
+                    for (int j = 0; j < attrPosTable2.length; j++) {
+                        if (!(i == (int) attrPosTable2[j] + this.attribute.length)) {
+                            countForNotMatch++;
+                        }
+                    }
+                    if (countForNotMatch == attrPosTable2.length) {
+                        actualPos[posIndex] = i;
+                        posIndex++;
+                    }
+                }
+            }
+
+            for (int t = 0; t < rows.size(); t++) {
+                Comparable[] newTup = new Comparable[actualPos.length];
+                for (int i = 0; i < actualPos.length; i++) {
+                    newTup[i] = rows.get(t)[(int) actualPos[i]];
+                }
+                rows.remove(rows.get(t));
+
+                rows.add(t, newTup);
+            }
+
+            return new Table(name + counter++, ArrayUtil.concat(attribute, newTableAttributes),
+                    ArrayUtil.concat(domain, newTableDomains), key, rows);
+        }
+        // if is empty
+        else {
+            return new Table(name + counter++, ArrayUtil.concat(attribute, table2.attribute),
+                    ArrayUtil.concat(domain, table2.domain), key, rows);
+        }
     } // join
 
     /************************************************************************************
