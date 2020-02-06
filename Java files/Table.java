@@ -196,10 +196,30 @@ public class Table
     {
         out.println ("RA> " + name + ".union (" + table2.name + ")");
         if (! compatible (table2)) return null;
-
+        
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
+        // adds the elements of the first table to rows
+        for (Comparable [] prime : this.tuples){
+            rows.add(this.extract(prime, attribute));
+        }
+        
+        int here = 0; // counter variable used for comparisons between the two tables
+        // compares the elements within the lhs table with the table on the rhs
+        for (Comparable [] prime : table2.tuples){ 
+        	for (Comparable [] temps : this.tuples){
+        		int [] cols   = match(key);
+	        	if ((prime[cols[0]].equals(temps[cols[0]]))) { // compares the titles of the movies, part 1/2 of the primary key
+	        		if ((prime[cols[1]].equals(temps[cols[1]]))) { // compares the year of the movies, part 2/2 of the primary key
+	        			here++; // if a movie in table2 is in the lhs table, counter goes up
+	        		}
+	        	}
+        	}
+        	if (here==0) { // if no instance of the title from table2 is found in the lhs table, it is added to rows
+        		rows.add(table2.extract(prime, attribute));
+        	}
+        	here = 0; // counter is reset for the next comparison loop
+        }
 
         return new Table (name + count++, attribute, domain, key, rows);
     } // union
@@ -221,7 +241,22 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
+        int here = 0; // counter variable used for comparisons between the two tables
+        // compares the elements within the lhs table with the table on the rhs
+        for (Comparable [] prime : this.tuples){ 
+        	for (Comparable [] temps : table2.tuples){
+        		int [] cols   = match(key);
+	        	if ((prime[cols[0]].equals(temps[cols[0]]))) { // compares the titles of the movies, part 1/2 of the primary key
+	        		if ((prime[cols[1]].equals(temps[cols[1]]))) { // compares the year of the movies, part 2/2 of the primary key
+	        			here++; // if a movie in the lhs table is in table2, counter goes up
+	        		}
+	        	}
+        	}
+        	if (here==0) { // if no instance of the title from the lhs table is found in table2, it is added to rows
+        		rows.add(table2.extract(prime, attribute));
+        	}
+        	here = 0; // counter is reset for the next comparison loop
+        }
 
         return new Table (name + count++, attribute, domain, key, rows);
     } // minus
